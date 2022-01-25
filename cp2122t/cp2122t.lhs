@@ -1391,7 +1391,6 @@ auxPairL (a,h:t) = (a,h)
 markMap :: [Pos] -> Map -> Map
 markMap l = cataList (either (const id) f2) (pairL l) where
   f2 = undefined
-
 \end{code}
 
 \begin{code}
