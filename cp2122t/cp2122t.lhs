@@ -1390,7 +1390,19 @@ auxPairL (a,h:t) = (a,h)
 \begin{code}
 markMap :: [Pos] -> Map -> Map
 markMap l = cataList (either (const id) f2) (pairL l) where
-  f2 = undefined
+  f2 = compX . (auxMarkMap . split auxToCell p1 >< id) 
+
+compX (f,g) = f . g
+
+auxMarkMap = uncurry (uncurry substMatrix) . assocl
+
+auxToCell = uncurry toCell
+
+substMatrix :: a -> Int -> Int -> [[a]] -> [[a]]
+substMatrix x coluna = cataNat (either f1 f2) where
+     f1 = const (\(h:t) -> subst x coluna h : t)
+     f2 f (h:t) = h : f t
+
 \end{code}
 
 \begin{code}
