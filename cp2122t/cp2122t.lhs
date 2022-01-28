@@ -1289,6 +1289,70 @@ A função $|g1|$ vai tratar do caso em que estamos a lidar com uma folha da $|L
 fácil de determinar pois os únicos passos que temos de realizar são gerar o $tuple$ ($hash$,$input$) e aplicar o
 construtor $|Unit|$ do tipo $|FTree|$. O primeiro passo é atingido através do $|split hash id|$ e o segundo é só compor 
 este com $|Unit|$ obtendo $|Unit . split hash id|$.
+
+Já a função $|g2|$ vai tratar do caso em que temos que processar $tuple$ de duas $|FTree|'s$. Aqui, a estratégia adotada
+foi gerar um $tuple$ com a concatenação dos $hashes$ como primeiro elemento e as duas $|FTree|'s$ como segundo e depois
+aplicar a função $|uncurry Comp|$ de maneira a gerar a $|FTree|$ final. 
+
+Assim de imediato aplicamos sobre o $tuple$ deentrada um $split$ de maneira a poder gerar um novo $tuple$ como o 
+descrito anteriormente. Como queremos preservar o $tuple$ com as $|FTree|'s$ no segundo elemento a segunda função 
+do $split$ será naturalmente a função identidade $id$. 
+
+Já a primeira função do $split$ tem mais que se lhe diga. O objetivo desta é, como já foi mencionado, gerar 
+a concatenação dos $hashes$ das $|FTree|'s$ que lhe são passadas. Para tal, primeiramente temos que isolar os
+respetivos $hashes$. Com isso em mente procedemos por aplicar a função $|outFTree|$ a cada uma das $|FTree|'s$
+efetivamente gerando uma um estrutura do tipo $|(Z >< A) + (Z >< (FTree Z (Z >< A))|^2)$ para cada. Como tudo o que 
+precisamos obter a partir desta estrutura são os $Z$ que constituem o primeiro elemento dos respetivos $tuples$ a 
+alternativa $|either p1 p1|$ é a função necessária para o efeito. Como esta função já se encontra disponibilizada pelo 
+nome $|firsts|$ fazemos então uso dela. Assim para obter os valores dos $hashes$ das $|FTree|'s$ utilizamos a composição 
+$|firsts . outFTree|$ ilustrado no seguinte diagrama:
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+     |Z|
+&
+     |(Z >< A) + (Z >< (FTree Z (Z >< A))|^2
+          \ar[l]^-{|firsts|}
+&
+     |FTree Z (Z >< A)|
+          \ar[l]^-{|outFTree|}
+}
+\end{eqnarray*}
+
+Sendo possível obter o valor dos $hashes$ das $|FTree|'s$ temos que gerar a concatenação dos mesmos. Para tal, fizemos
+uso da função já disponibilizada $concHash$ que aceita um $tuple$ de $Z$ como entrada. Este será gerado aplicanda a
+função já definada a cada um dos elementos do $tuple$ de entrada através do uso do compositor $|><|$ efetivamente
+gerando a função $|(firsts . outFTree) >< (firsts . outFTree)|$ com o comportamento definido no seguinte diagrama:
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+     |Z|
+          \ar[r]^-{|p1|}
+&
+     |Z >< Z|
+&
+     |Z|
+          \ar[l]_-{|p2|}
+\\
+     |FTree Z (Z >< A)|
+          \ar[r]_-{|p1|}
+          \ar[u]^-{|firsts . outFTree|}
+&
+     |(FTree Z (Z >< A))|^2
+          \ar[u]_-{|(firsts . outFTree) >< (firsts . outFTree)|}
+&
+     |FTree Z (Z >< A)|
+          \ar[l]^-{|p2|}
+          \ar[u]_-{|firsts . outFTree|}
+}
+\end{eqnarray*}
+
+Assim concluímos que para gerar a concatenação dos $hashes$ das duas $|FTree|'s$ como primeiro elemento do $tuple$
+teriamos que usar a função $|concHash . ((firsts . outFTree) >< (firsts . outFTree))|$.
+
+Finalmente após este processo todo acabamos com a função 
+$|uncurry Comp . split (concHash . ((firsts . outFTree) >< (firsts . outFTree))) id|$ para $|g2|$.
+
 \begin{code}
 g_lTree2MTree :: Hashable c => Either c (FTree Integer (Integer, c), FTree Integer (Integer, c)) -> FTree Integer (Integer, c)
 g_lTree2MTree = either (Unit . split Main.hash id) (uncurry Comp . split (concHash . ((firsts . outFTree) >< (firsts . outFTree))) id)
@@ -1337,13 +1401,177 @@ g1 = split h1 k1
 g2 = split h2 k2
 \end{code}
 Genes |h = either h1 h2| e |k = either k1 k2| identificados no cálculo:
+\begin{eqnarray}
+|lcbr(
+     wc_w . inT = h . fF(split wc_w lookahead_sep)
+     )(
+        lookahead_sep . inT = k . fF(split wc_w lookahead_sep)
+)|
+\end{eqnarray}
+Determinar h:
+\begin{eqnarray}
+\start
+     |wc_w . inT = h . fF(split wc_w lookahead_sep)|
+%
+\just\equiv{ |inT := either nil cons| ; |h := either h1 h2| ; |fF f = id + id >< f|}
+     |wc_w . either nil cons = either h1 h2 . (id + id >< split wc_w lookahead_sep)|
+%
+\just\equiv{ Fusão-+, lei(20) ; Absorção-+, lei(22)}
+     |either (wc_w . nil) (wc_w . cons) = either (h1 . id) (h2 . (id + id >< split wc_w lookahead_sep))|
+%
+\just\equiv{ Eq-+, lei(27) ; Natural-id, lei(1)}
+          |lcbr(
+          wc_w . nil = h1
+     )(
+          wc_w . cons = h2 . (id >< split wc_w lookahead_sep)
+     )|
+%
+\just\equiv{ Igualdade Extensional, lei(71) ; Def-comp, lei(72) ; Def-const, lei(74)}
+          |lcbr(
+          wc_w [] = h1 x
+     )(
+          wc_w (cons x) = h2 ((id >< split wc_w lookahead_sep) x)
+     )|
+%
+\just\equiv{ |wc_w [] = 0| ; x := (x,y) ; Def-x, lei(77)}
+          |lcbr(
+          0 = h1 x
+     )(
+          wc_w (cons (x,y)) = h2 (id x, (split wc_w lookahead_sep) y)
+     )|
+%
+\just\equiv{ Def-id, lei(73) ; Def-split, lei(76) ; cons (x,y) = (x:y)}
+          |lcbr(
+          0 = h1 x
+     )(
+          wc_w (x:y) = h2 (x, (wc_w y, lookahead_sep y))
+     )|
+%
+\just\equiv{ Propriedade simétrica da igualdade ; |wc_w (x:y) = if not (sp x) && lookahead_sep y then wc_w y + 1 else wc_w y|}
+        |lcbr(
+          h1 x = 0
+     )(
+          h2 (x, (wc_w y, lookahead_sep y)) = if not (sp x) && lookahead_sep y then wc_w y + 1 else wc_w y
+     )|
+%
+\just\equiv{Def-cond, lei(78)}
+        |lcbr(
+          h1 x = 0
+     )(
+          h2 (x, (wc_w y, lookahead_sep y)) = cond (not (sp x) && lookahead_sep y) (wc_w y + 1) (wc_w y)
+     )|
+%
+\just\equiv{|auxWcW (x,y) = x && y| ; |succ x = x + 1|}
+        |lcbr(
+          h1 x = 0
+     )(
+          h2 (x, (wc_w y, lookahead_sep y)) = cond (auxWcW (not (sp x), lookahead_sep y)) (succ (wc_w y)) (wc_w y)
+     )|
+%
+\just\equiv{Def-comp, lei(72)}
+        |lcbr(
+          h1 x = 0
+     )(
+          h2 (x, (wc_w y, lookahead_sep y)) = cond (auxWcW ((not . sp) x, lookahead_sep y)) (succ (wc_w y)) (wc_w y)
+     )|
+%
+\just\equiv{Def-proj, lei(79)}
+        |lcbr(
+          h1 x = 0
+     )(
+          h2 (x, (wc_w y, lookahead_sep y)) = cond (auxWcW ((not . sp) x, p2 (wc_w y, lookahead_sep y))) (succ (p1 (wc_w y, lookahead_sep y))) (p1 (wc_w y, lookahead_sep y))
+     )|
+%
+\just\equiv{Def-x, lei(77), Def-comp, lei(72)}
+        |lcbr(
+          h1 x = 0
+     )(
+          h2 (x, (wc_w y, lookahead_sep y)) = cond ((auxWcW . ((not . sp) >< p2)) (x,(wc_w y, lookahead_sep y))) ((succ . p1) (wc_w y, lookahead_sep y)) (p1 (wc_w y, lookahead_sep y))
+     )|
+%
+\just\equiv{Def-x, lei(79), Def-comp, lei(72)}
+        |lcbr(
+          h1 x = 0
+     )(
+          h2 (x, (wc_w y, lookahead_sep y)) = cond ((auxWcW . ((not . sp) >< p2)) (x,(wc_w y, lookahead_sep y))) ((succ . p1 . p2) (x,(wc_w y, lookahead_sep y))) (p1 . p2 (x,(wc_w y, lookahead_sep y)))
+     )|
+%
+\just\equiv{Def-cond, lei(78)}
+        |lcbr(
+          h1 x = 0
+     )(
+          h2 (x, (wc_w y, lookahead_sep y)) = (cond (auxWcW . ((not . sp) >< p2)) (succ . p1 . p2) (p1 . p2)) (x,(wc_w y, lookahead_sep y)
+     )|
+\qed
+\end{eqnarray}
+
+A partir do cálculo efetuado em cima concluímos que $|h1|$ é a função constante $|zero|$ e $|h2|$ é a função
+$|cond (auxWcW . ((not . sp ) >< p2)) (succ . p1 . p2) (p1 . p2)|$.
 \begin{code}
 h1 = zero
-h2 = cond (auxWcW . split (not . sp . p1) (p2 . p2)) (succ . p1 . p2) (p1 . p2)
+h2 = cond (auxWcW . ((not . sp ) >< p2)) (succ . p1 . p2) (p1 . p2)
 
 auxWcW :: (Bool,Bool) -> Bool
 auxWcW (x,y) = x && y
+\end{code}
+Determinar k:
+\begin{eqnarray}
+\start
+     |lookahead_sep . inT = h . fF(split wc_w lookahead_sep)|
+%
+\just\equiv{ |inT := either nil cons| ; |k := either k1 k2| ; |fF f = id + id >< f|}
+     |lookahead_sep . either nil cons = either k1 k2 . (id + id >< split wc_w lookahead_sep)|
+%
+\just\equiv{ Fusão-+, lei(20) ; Absorção-+, lei(22)}
+     |either (lookahead_sep . nil) (lookahead_sep . cons) = either (k1 . id) (k2 . (id + id >< split wc_w lookahead_sep))|
+%
+\just\equiv{ Eq-+, lei(27) ; Natural-id, lei(1)}
+          |lcbr(
+          lookahead_sep . nil = k1
+     )(
+          lookahead_sep . cons = k2 . (id >< split wc_w lookahead_sep)
+     )|
+%
+\just\equiv{ Igualdade Extensional, lei(71) ; Def-comp, lei(72) ; Def-const, lei(74)}
+          |lcbr(
+          lookahead_sep [] = k1 x
+     )(
+          lookahead_sep (cons x) = k2 ((id >< split wc_w lookahead_sep) x)
+     )|
+%
+\just\equiv{ |lookahead_sep [] = True| ; x := (x,y) ; Def-x, lei(77)}
+          |lcbr(
+          True = k1 x
+     )(
+          lookahead_sep (cons (x,y)) = h2 (id x, (split wc_w lookahead_sep) y)
+     )|
+%
+\just\equiv{ Def-id, lei(73) ; Def-split, lei(76) ; cons (x,y) = (x:y)}
+          |lcbr(
+          True = k1 x
+     )(
+          lookahead_sep (x:y) = k2 (x, (wc_w y, lookahead_sep y))
+     )|
+%
+\just\equiv{|lookahead_sep (x:y) = sp x|}
+          |lcbr(
+          True = k1 x
+     )(
+          sp x = k2 (x, (wc_w y, lookahead_sep y))
+     )|
+%
+\just\equiv{Propriedade simétrica da igualdade}
+        |lcbr(
+          k1 x = True
+     )(
+          k2 (x, (wc_w y, lookahead_sep y)) = sp x
+     )|
+\qed
+\end{eqnarray}
 
+A partir do cálculo efetuado em cima concluímos que $|k1|$ é a função constante $|const True|$ e $|k2|$ tem que ser
+a função $|sp . p1|$.
+\begin{code}
 k1 = const True
 k2 = sp . p1
 \end{code}
@@ -1399,8 +1627,8 @@ auxMarkMap = uncurry (uncurry substMatrix) . assocl
 auxToCell = uncurry toCell
 
 substMatrix :: a -> Int -> Int -> [[a]] -> [[a]]
-substMatrix x coluna = cataNat (either f1 f2) where
-     f1 = const (\(h:t) -> subst x coluna h : t)
+substMatrix x linha = cataNat (either f1 f2) where
+     f1 = const (\(h:t) -> subst x linha h : t)
      f2 f (h:t) = h : f t
 
 \end{code}

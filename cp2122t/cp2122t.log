@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.17)  21 JAN 2022 14:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.17)  28 JAN 2022 17:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1077,18 +1077,57 @@ Overfull \hbox (12.57095pt too wide) in paragraph at lines 1424--1519
  [14] <xymatrix 3x2 243>
 \openout5 = `cp2122t.ptb'.
 
- <xymatrix 2x2 191>
-\openout5 = `cp2122t.ptb'.
 
-\openout5 = `cp2122t.ptb'.
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][] 
+ []
 
-\openout5 = `cp2122t.ptb'.
 
- [15]
-\openout5 = `cp2122t.ptb'.
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][] 
+ []
 
-\openout5 = `cp2122t.ptb'.
 
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][] 
+ []
+
+
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][] 
+ []
+
+
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][] 
+ []
+
+
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][] 
+ []
+
+
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][] 
+ []
+
+
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][][][] 
+ []
+
+
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][][][] 
+ []
+
+
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+ [][] 
+ []
+
+<xymatrix 2x2 191> [15] <xymatrix 3x1 102> <xymatrix 3x2 334>
 \openout5 = `cp2122t.ptb'.
 
 \openout5 = `cp2122t.ptb'.
@@ -1100,6 +1139,15 @@ Overfull \hbox (12.57095pt too wide) in paragraph at lines 1424--1519
  [16]
 \openout5 = `cp2122t.ptb'.
 
+
+Overfull \hbox (437.69019pt too wide) in alignment at lines 1955--2001
+ [][][] []
+ []
+
+[17]
+\openout5 = `cp2122t.ptb'.
+
+ [18]
 \openout5 = `cp2122t.ptb'.
 
 \openout5 = `cp2122t.ptb'.
@@ -1114,8 +1162,18 @@ Overfull \hbox (12.57095pt too wide) in paragraph at lines 1424--1519
 
 \openout5 = `cp2122t.ptb'.
 
- (./cp2122t.ind
-[17] [18
+ [19]
+\openout5 = `cp2122t.ptb'.
+
+\openout5 = `cp2122t.ptb'.
+
+\openout5 = `cp2122t.ptb'.
+
+\openout5 = `cp2122t.ptb'.
+
+\openout5 = `cp2122t.ptb'.
+
+ (./cp2122t.ind [20] [21
 
 
 ]) (./cp2122t.bbl
@@ -1125,55 +1183,57 @@ Overfull \hbox (91.4158pt too wide) in paragraph at lines 22--28
  .
  []
 
-) [19
+) [22
 
 ] (./cp2122t.aux)
 Package rerunfilecheck Info: File `cp2122t.out' has not changed.
 (rerunfilecheck)             Checksum: 5BE6D09900E9771E8C324901A967EEEB;1140.
  ) 
 Here is how much of TeX's memory you used:
- 16397 strings out of 478994
- 239139 string characters out of 5858183
- 629229 words of memory out of 5000000
+ 16400 strings out of 478994
+ 239160 string characters out of 5858183
+ 634229 words of memory out of 5000000
  33444 multiletter control sequences out of 15000+600000
  443534 words of font info for 144 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  72i,21n,77p,3290b,511s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/te
-xlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/tex
-live/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texl
-ive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texliv
-e/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/
-2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/20
-21/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2021/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2021/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2021/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2021/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2021/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmss9.pfb></usr/local/texlive/2021/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2021/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2021/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmti9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/pu
-blic/amsfonts/symbols/msam10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type
-1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2021/texmf-dist/fonts/
-type1/public/stmaryrd/stmary10.pfb></usr/local/texlive/2021/texmf-dist/fonts/ty
-pe1/public/stmaryrd/stmary9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1
-/urw/courier/ucrr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/pal
-atino/uplb8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino/u
-plr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino/uplr8a.p
-fb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb></u
-sr/local/texlive/2021/texmf-dist/fonts/type1/public/xypic/xyatip10.pfb></usr/lo
-cal/texlive/2021/texmf-dist/fonts/type1/public/xypic/xybtip10.pfb>
-Output written on cp2122t.pdf (19 pages, 380218 bytes).
+xlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/local/texl
+ive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texli
+ve/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texliv
+e/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/
+2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/20
+21/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2021
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2021/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2021/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2021/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2021/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2021/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2021/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmss9.pfb></usr/local/texlive/2021/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmti7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmti8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmti9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/
+amsfonts/symbols/msam10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/pub
+lic/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1
+/public/stmaryrd/stmary10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/p
+ublic/stmaryrd/stmary9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/
+courier/ucrr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino
+/uplb8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino/uplr8a
+.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></
+usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb></usr/lo
+cal/texlive/2021/texmf-dist/fonts/type1/public/xypic/xyatip10.pfb></usr/local/t
+exlive/2021/texmf-dist/fonts/type1/public/xypic/xybtip10.pfb>
+Output written on cp2122t.pdf (22 pages, 414003 bytes).
 PDF statistics:
- 537 PDF objects out of 1000 (max. 8388607)
- 436 compressed objects within 5 object streams
- 83 named destinations out of 1000 (max. 500000)
+ 583 PDF objects out of 1000 (max. 8388607)
+ 467 compressed objects within 5 object streams
+ 86 named destinations out of 1000 (max. 500000)
  49 words of extra memory for PDF output out of 10000 (max. 10000000)
 

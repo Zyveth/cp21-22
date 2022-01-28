@@ -1752,12 +1752,29 @@ escolher a segunda metade da lista. Assim acabamos com $\ensuremath{\p2\comp \Va
 Desta forma, determinamos que o gene do anamorfismo de $\ensuremath{\Varid{list2LTree}}$ deve ser:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{17}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
-\>[B]{}\Varid{g\char95 list2LTree}\mathrel{=}(\Varid{id}+\conj{\Varid{cons}\comp (\Varid{id}\times(\p1\comp \Varid{half}))}{\p2\comp \Varid{half}\comp \p2})\comp \Varid{outNEList}{}\<[E]%
+\>[B]{}\Varid{g\char95 list2LTree}\mathrel{=}(\Varid{id}+\conj{\Varid{cond}\;\Varid{auxCond}\;\Varid{getEvenBlock}\;\Varid{id}\comp \p1\comp \Varid{auxHalf}\comp \Varid{half}\comp \Varid{cons}}{\Varid{cond}\;\Varid{auxCond}\;\Varid{getEvenBlock}\;\Varid{id}\comp \p2\comp \Varid{auxHalf}\comp \Varid{half}\comp \Varid{cons}})\comp \Varid{outNEList}{}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\Varid{half}\mathbin{::}[\mskip1.5mu \Varid{a}\mskip1.5mu]\to ([\mskip1.5mu \Varid{a}\mskip1.5mu],[\mskip1.5mu \Varid{a}\mskip1.5mu]){}\<[E]%
 \\
 \>[B]{}\Varid{half}\;\Varid{list}\mathrel{=}\Varid{splitAt}\;(\length \;\Varid{list}\mathbin{\Varid{`div`}}\mathrm{2})\;\Varid{list}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{auxCond}\mathbin{::}[\mskip1.5mu \Varid{a}\mskip1.5mu]\to \Conid{Bool}{}\<[E]%
+\\
+\>[B]{}\Varid{auxCond}\;\Varid{l}\mathrel{=}\length \;\Varid{l}\mathbin{>}\mathrm{1}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{auxHalf}\mathbin{::}([\mskip1.5mu \Varid{a}\mskip1.5mu],[\mskip1.5mu \Varid{a}\mskip1.5mu])\to ([\mskip1.5mu \Varid{a}\mskip1.5mu],[\mskip1.5mu \Varid{a}\mskip1.5mu]){}\<[E]%
+\\
+\>[B]{}\Varid{auxHalf}\;(l_1 ,l_2 )\mid \length \;l_1 \mathbin{<}\length \;l_2 \mathrel{=}(l_1 \mathbin{+\!\!\!+}[\mskip1.5mu \Varid{last}\;l_1 \mskip1.5mu],l_2 ){}\<[E]%
+\\
+\>[B]{}\hsindent{17}{}\<[17]%
+\>[17]{}\mid \length \;l_2 \mathbin{<}\length \;l_1 \mathrel{=}(l_1 ,l_2 \mathbin{+\!\!\!+}[\mskip1.5mu \Varid{last}\;l_2 \mskip1.5mu]){}\<[E]%
+\\
+\>[B]{}\hsindent{17}{}\<[17]%
+\>[17]{}\mid \Varid{otherwise}\mathrel{=}(l_1 ,l_2 ){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\mbox{\onelinecomment  (cond auxCond evenBlock id) . p1 . half . cons}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 Gene do catamorfismo:
@@ -1785,6 +1802,70 @@ A função $\ensuremath{\Varid{g1}}$ vai tratar do caso em que estamos a lidar c
 fácil de determinar pois os únicos passos que temos de realizar são gerar o $tuple$ ($hash$,$input$) e aplicar o
 construtor $\ensuremath{\Conid{Unit}}$ do tipo $\ensuremath{{\FTree}}$. O primeiro passo é atingido através do $\ensuremath{\conj{\Varid{hash}}{\Varid{id}}}$ e o segundo é só compor 
 este com $\ensuremath{\Conid{Unit}}$ obtendo $\ensuremath{\Conid{Unit}\comp \conj{\Varid{hash}}{\Varid{id}}}$.
+
+Já a função $\ensuremath{\Varid{g2}}$ vai tratar do caso em que temos que processar $tuple$ de duas $\ensuremath{{\FTree}}'s$. Aqui, a estratégia adotada
+foi gerar um $tuple$ com a concatenação dos $hashes$ como primeiro elemento e as duas $\ensuremath{{\FTree}}'s$ como segundo e depois
+aplicar a função $\ensuremath{\uncurry{\Conid{Comp}}}$ de maneira a gerar a $\ensuremath{{\FTree}}$ final. 
+
+Assim de imediato aplicamos sobre o $tuple$ deentrada um $split$ de maneira a poder gerar um novo $tuple$ como o 
+descrito anteriormente. Como queremos preservar o $tuple$ com as $\ensuremath{{\FTree}}'s$ no segundo elemento a segunda função 
+do $split$ será naturalmente a função identidade $id$. 
+
+Já a primeira função do $split$ tem mais que se lhe diga. O objetivo desta é, como já foi mencionado, gerar 
+a concatenação dos $hashes$ das $\ensuremath{{\FTree}}'s$ que lhe são passadas. Para tal, primeiramente temos que isolar os
+respetivos $hashes$. Com isso em mente procedemos por aplicar a função $\ensuremath{\mathsf{out}}$ a cada uma das $\ensuremath{{\FTree}}'s$
+efetivamente gerando uma um estrutura do tipo $\ensuremath{(\Conid{Z}\times\Conid{A})\mathbin{+}(\Conid{Z}\times({\FTree}\;\Conid{Z}\;(\Conid{Z}\times\Conid{A}))}^2)$ para cada. Como tudo o que 
+precisamos obter a partir desta estrutura são os $Z$ que constituem o primeiro elemento dos respetivos $tuples$ a 
+alternativa $\ensuremath{\alt{\p1}{\p1}}$ é a função necessária para o efeito. Como esta função já se encontra disponibilizada pelo 
+nome $\ensuremath{\Varid{firsts}}$ fazemos então uso dela. Assim para obter os valores dos $hashes$ das $\ensuremath{{\FTree}}'s$ utilizamos a composição 
+$\ensuremath{\Varid{firsts}\comp \mathsf{out}}$ ilustrado no seguinte diagrama:
+
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+     \ensuremath{\Conid{Z}}
+&
+     \ensuremath{(\Conid{Z}\times\Conid{A})\mathbin{+}(\Conid{Z}\times({\FTree}\;\Conid{Z}\;(\Conid{Z}\times\Conid{A}))}^2
+          \ar[l]^-{\ensuremath{\Varid{firsts}}}
+&
+     \ensuremath{{\FTree}\;\Conid{Z}\;(\Conid{Z}\times\Conid{A})}
+          \ar[l]^-{\ensuremath{\mathsf{out}}}
+}
+\end{eqnarray*}
+
+Sendo possível obter o valor dos $hashes$ das $\ensuremath{{\FTree}}'s$ temos que gerar a concatenação dos mesmos. Para tal, fizemos
+uso da função já disponibilizada $concHash$ que aceita um $tuple$ de $Z$ como entrada. Este será gerado aplicanda a
+função já definada a cada um dos elementos do $tuple$ de entrada através do uso do compositor $\ensuremath{\times}$ efetivamente
+gerando a função $\ensuremath{(\Varid{firsts}\comp \mathsf{out})\times(\Varid{firsts}\comp \mathsf{out})}$ com o comportamento definido no seguinte diagrama:
+
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+     \ensuremath{\Conid{Z}}
+          \ar[r]^-{\ensuremath{\p1}}
+&
+     \ensuremath{\Conid{Z}\times\Conid{Z}}
+&
+     \ensuremath{\Conid{Z}}
+          \ar[l]_-{\ensuremath{\p2}}
+\\
+     \ensuremath{{\FTree}\;\Conid{Z}\;(\Conid{Z}\times\Conid{A})}
+          \ar[r]_-{\ensuremath{\p1}}
+          \ar[u]^-{\ensuremath{\Varid{firsts}\comp \mathsf{out}}}
+&
+     \ensuremath{({\FTree}\;\Conid{Z}\;(\Conid{Z}\times\Conid{A}))}^2
+          \ar[u]_-{\ensuremath{(\Varid{firsts}\comp \mathsf{out})\times(\Varid{firsts}\comp \mathsf{out})}}
+&
+     \ensuremath{{\FTree}\;\Conid{Z}\;(\Conid{Z}\times\Conid{A})}
+          \ar[l]^-{\ensuremath{\p2}}
+          \ar[u]_-{\ensuremath{\Varid{firsts}\comp \mathsf{out}}}
+}
+\end{eqnarray*}
+
+Assim concluímos que para gerar a concatenação dos $hashes$ das duas $\ensuremath{{\FTree}}'s$ como primeiro elemento do $tuple$
+teriamos que usar a função $\ensuremath{\Varid{concHash}\comp ((\Varid{firsts}\comp \mathsf{out})\times(\Varid{firsts}\comp \mathsf{out}))}$.
+
+Finalmente após este processo todo acabamos com a função 
+$\ensuremath{\uncurry{\Conid{Comp}}\comp \conj{\Varid{concHash}\comp ((\Varid{firsts}\comp \mathsf{out})\times(\Varid{firsts}\comp \mathsf{out}))}{\Varid{id}}}$ para $\ensuremath{\Varid{g2}}$.
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -1867,17 +1948,108 @@ Gene de \ensuremath{\Varid{worker}}:
 \ColumnHook
 \end{hscode}\resethooks
 Genes \ensuremath{\Varid{h}\mathrel{=}\alt{h_1 }{h_2 }} e \ensuremath{\Varid{k}\mathrel{=}\alt{k_1 }{k_2 }} identificados no cálculo:
+\begin{eqnarray}
+\ensuremath{\begin{lcbr}\Varid{wc\char95 w}\comp \mathsf{in}\mathrel{=}\Varid{h}\comp \fun F \;\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}}\\\Varid{lookahead\char95 sep}\comp \mathsf{in}\mathrel{=}\Varid{k}\comp \fun F \;\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}}\end{lcbr}}
+\end{eqnarray}
+Determinar h:
+\begin{eqnarray}
+\start
+     \ensuremath{\Varid{wc\char95 w}\comp \mathsf{in}\mathrel{=}\Varid{h}\comp \fun F \;\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}}}
+%
+\just\equiv{ \ensuremath{\mathsf{in}\mathbin{:=}\alt{\Varid{nil}}{\Varid{cons}}} ; \ensuremath{\Varid{h}\mathbin{:=}\alt{h_1 }{h_2 }} ; \ensuremath{\fun F \;\Varid{f}\mathrel{=}\Varid{id}\mathbin{+}\Varid{id}\times\Varid{f}}}
+     \ensuremath{\Varid{wc\char95 w}\comp \alt{\Varid{nil}}{\Varid{cons}}\mathrel{=}\alt{h_1 }{h_2 }\comp (\Varid{id}\mathbin{+}\Varid{id}\times\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}})}
+%
+\just\equiv{ Fusão-+, lei(20) ; Absorção-+, lei(22)}
+     \ensuremath{\alt{\Varid{wc\char95 w}\comp \Varid{nil}}{\Varid{wc\char95 w}\comp \Varid{cons}}\mathrel{=}\alt{h_1 \comp \Varid{id}}{h_2 \comp (\Varid{id}\mathbin{+}\Varid{id}\times\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}})}}
+%
+\just\equiv{ Eq-+, lei(27) ; Natural-id, lei(1)}
+          \ensuremath{\begin{lcbr}\Varid{wc\char95 w}\comp \Varid{nil}\mathrel{=}h_1 \\\Varid{wc\char95 w}\comp \Varid{cons}\mathrel{=}h_2 \comp (\Varid{id}\times\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}})\end{lcbr}}
+%
+\just\equiv{ Igualdade Extensional, lei(71) ; Def-comp, lei(72) ; Def-const, lei(74)}
+          \ensuremath{\begin{lcbr}\Varid{wc\char95 w}\;[\mskip1.5mu \mskip1.5mu]\mathrel{=}h_1 \;\Varid{x}\\\Varid{wc\char95 w}\;(\Varid{cons}\;\Varid{x})\mathrel{=}h_2 \;((\Varid{id}\times\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}})\;\Varid{x})\end{lcbr}}
+%
+\just\equiv{ \ensuremath{\Varid{wc\char95 w}\;[\mskip1.5mu \mskip1.5mu]\mathrel{=}\mathrm{0}} ; x := (x,y) ; Def-x, lei(77)}
+          \ensuremath{\begin{lcbr}\mathrm{0}\mathrel{=}h_1 \;\Varid{x}\\\Varid{wc\char95 w}\;(\Varid{cons}\;(\Varid{x},\Varid{y}))\mathrel{=}h_2 \;(\Varid{id}\;\Varid{x},\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}}\;\Varid{y})\end{lcbr}}
+%
+\just\equiv{ Def-id, lei(73) ; Def-split, lei(76) ; cons (x,y) = (x:y)}
+          \ensuremath{\begin{lcbr}\mathrm{0}\mathrel{=}h_1 \;\Varid{x}\\\Varid{wc\char95 w}\;(\Varid{x}\mathbin{:}\Varid{y})\mathrel{=}h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\end{lcbr}}
+%
+\just\equiv{ Propriedade simétrica da igualdade ; \ensuremath{\Varid{wc\char95 w}\;(\Varid{x}\mathbin{:}\Varid{y})\mathrel{=}\mathbf{if}\;\neg \;(\Varid{sp}\;\Varid{x})\mathrel{\wedge}\Varid{lookahead\char95 sep}\;\Varid{y}\;\mathbf{then}\;\Varid{wc\char95 w}\;\Varid{y}\mathbin{+}\mathrm{1}\;\mathbf{else}\;\Varid{wc\char95 w}\;\Varid{y}}}
+        \ensuremath{\begin{lcbr}h_1 \;\Varid{x}\mathrel{=}\mathrm{0}\\h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}\mathbf{if}\;\neg \;(\Varid{sp}\;\Varid{x})\mathrel{\wedge}\Varid{lookahead\char95 sep}\;\Varid{y}\;\mathbf{then}\;\Varid{wc\char95 w}\;\Varid{y}\mathbin{+}\mathrm{1}\;\mathbf{else}\;\Varid{wc\char95 w}\;\Varid{y}\end{lcbr}}
+%
+\just\equiv{Def-cond, lei(78)}
+        \ensuremath{\begin{lcbr}h_1 \;\Varid{x}\mathrel{=}\mathrm{0}\\h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}\Varid{cond}\;(\neg \;(\Varid{sp}\;\Varid{x})\mathrel{\wedge}\Varid{lookahead\char95 sep}\;\Varid{y})\;(\Varid{wc\char95 w}\;\Varid{y}\mathbin{+}\mathrm{1})\;(\Varid{wc\char95 w}\;\Varid{y})\end{lcbr}}
+%
+\just\equiv{\ensuremath{\Varid{auxWcW}\;(\Varid{x},\Varid{y})\mathrel{=}\Varid{x}\mathrel{\wedge}\Varid{y}} ; \ensuremath{\succ \;\Varid{x}\mathrel{=}\Varid{x}\mathbin{+}\mathrm{1}}}
+        \ensuremath{\begin{lcbr}h_1 \;\Varid{x}\mathrel{=}\mathrm{0}\\h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}\Varid{cond}\;(\Varid{auxWcW}\;(\neg \;(\Varid{sp}\;\Varid{x}),\Varid{lookahead\char95 sep}\;\Varid{y}))\;(\succ \;(\Varid{wc\char95 w}\;\Varid{y}))\;(\Varid{wc\char95 w}\;\Varid{y})\end{lcbr}}
+%
+\just\equiv{Def-comp, lei(72)}
+        \ensuremath{\begin{lcbr}h_1 \;\Varid{x}\mathrel{=}\mathrm{0}\\h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}\Varid{cond}\;(\Varid{auxWcW}\;((\neg \comp \Varid{sp})\;\Varid{x},\Varid{lookahead\char95 sep}\;\Varid{y}))\;(\succ \;(\Varid{wc\char95 w}\;\Varid{y}))\;(\Varid{wc\char95 w}\;\Varid{y})\end{lcbr}}
+%
+\just\equiv{Def-proj, lei(79)}
+        \ensuremath{\begin{lcbr}h_1 \;\Varid{x}\mathrel{=}\mathrm{0}\\h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}\Varid{cond}\;(\Varid{auxWcW}\;((\neg \comp \Varid{sp})\;\Varid{x},\p2\;(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y})))\;(\succ \;(\p1\;(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y})))\;(\p1\;(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\end{lcbr}}
+%
+\just\equiv{Def-x, lei(77), Def-comp, lei(72)}
+        \ensuremath{\begin{lcbr}h_1 \;\Varid{x}\mathrel{=}\mathrm{0}\\h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}\Varid{cond}\;((\Varid{auxWcW}\comp ((\neg \comp \Varid{sp})\times\p2))\;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y})))\;((\succ \comp \p1)\;(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\;(\p1\;(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\end{lcbr}}
+%
+\just\equiv{Def-x, lei(79), Def-comp, lei(72)}
+        \ensuremath{\begin{lcbr}h_1 \;\Varid{x}\mathrel{=}\mathrm{0}\\h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}\Varid{cond}\;((\Varid{auxWcW}\comp ((\neg \comp \Varid{sp})\times\p2))\;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y})))\;((\succ \comp \p1\comp \p2)\;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y})))\;(\p1\comp \p2\;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y})))\end{lcbr}}
+%
+\just\equiv{Def-cond, lei(78)}
+        \ensuremath{\begin{lcbr}h_1 \;\Varid{x}\mathrel{=}\mathrm{0}\\h_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}(\Varid{cond}\;(\Varid{auxWcW}\comp ((\neg \comp \Varid{sp})\times\p2))\;(\succ \comp \p1\comp \p2)\;(\p1\comp \p2))\;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\end{lcbr}}
+\qed
+\end{eqnarray}
+
+A partir do cálculo efetuado em cima concluímos que $\ensuremath{h_1 }$ é a função constante $\ensuremath{\Varid{zero}}$ e $\ensuremath{h_2 }$ é a função
+$\ensuremath{\Varid{cond}\;(\Varid{auxWcW}\comp ((\neg \comp \Varid{sp})\times\p2))\;(\succ \comp \p1\comp \p2)\;(\p1\comp \p2)}$.
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}h_1 \mathrel{=}\Varid{zero}{}\<[E]%
 \\
-\>[B]{}h_2 \mathrel{=}\Varid{cond}\;(\Varid{auxWcW}\comp \conj{\neg \comp \Varid{sp}\comp \p1}{\p2\comp \p2})\;(\succ \comp \p1\comp \p2)\;(\p1\comp \p2){}\<[E]%
+\>[B]{}h_2 \mathrel{=}\Varid{cond}\;(\Varid{auxWcW}\comp ((\neg \comp \Varid{sp})\times\p2))\;(\succ \comp \p1\comp \p2)\;(\p1\comp \p2){}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\Varid{auxWcW}\mathbin{::}(\Conid{Bool},\Conid{Bool})\to \Conid{Bool}{}\<[E]%
 \\
 \>[B]{}\Varid{auxWcW}\;(\Varid{x},\Varid{y})\mathrel{=}\Varid{x}\mathrel{\wedge}\Varid{y}{}\<[E]%
-\\[\blanklineskip]%
+\ColumnHook
+\end{hscode}\resethooks
+Determinar k:
+\begin{eqnarray}
+\start
+     \ensuremath{\Varid{lookahead\char95 sep}\comp \mathsf{in}\mathrel{=}\Varid{h}\comp \fun F \;\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}}}
+%
+\just\equiv{ \ensuremath{\mathsf{in}\mathbin{:=}\alt{\Varid{nil}}{\Varid{cons}}} ; \ensuremath{\Varid{k}\mathbin{:=}\alt{k_1 }{k_2 }} ; \ensuremath{\fun F \;\Varid{f}\mathrel{=}\Varid{id}\mathbin{+}\Varid{id}\times\Varid{f}}}
+     \ensuremath{\Varid{lookahead\char95 sep}\comp \alt{\Varid{nil}}{\Varid{cons}}\mathrel{=}\alt{k_1 }{k_2 }\comp (\Varid{id}\mathbin{+}\Varid{id}\times\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}})}
+%
+\just\equiv{ Fusão-+, lei(20) ; Absorção-+, lei(22)}
+     \ensuremath{\alt{\Varid{lookahead\char95 sep}\comp \Varid{nil}}{\Varid{lookahead\char95 sep}\comp \Varid{cons}}\mathrel{=}\alt{k_1 \comp \Varid{id}}{k_2 \comp (\Varid{id}\mathbin{+}\Varid{id}\times\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}})}}
+%
+\just\equiv{ Eq-+, lei(27) ; Natural-id, lei(1)}
+          \ensuremath{\begin{lcbr}\Varid{lookahead\char95 sep}\comp \Varid{nil}\mathrel{=}k_1 \\\Varid{lookahead\char95 sep}\comp \Varid{cons}\mathrel{=}k_2 \comp (\Varid{id}\times\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}})\end{lcbr}}
+%
+\just\equiv{ Igualdade Extensional, lei(71) ; Def-comp, lei(72) ; Def-const, lei(74)}
+          \ensuremath{\begin{lcbr}\Varid{lookahead\char95 sep}\;[\mskip1.5mu \mskip1.5mu]\mathrel{=}k_1 \;\Varid{x}\\\Varid{lookahead\char95 sep}\;(\Varid{cons}\;\Varid{x})\mathrel{=}k_2 \;((\Varid{id}\times\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}})\;\Varid{x})\end{lcbr}}
+%
+\just\equiv{ \ensuremath{\Varid{lookahead\char95 sep}\;[\mskip1.5mu \mskip1.5mu]\mathrel{=}\Conid{True}} ; x := (x,y) ; Def-x, lei(77)}
+          \ensuremath{\begin{lcbr}\Conid{True}\mathrel{=}k_1 \;\Varid{x}\\\Varid{lookahead\char95 sep}\;(\Varid{cons}\;(\Varid{x},\Varid{y}))\mathrel{=}h_2 \;(\Varid{id}\;\Varid{x},\conj{\Varid{wc\char95 w}}{\Varid{lookahead\char95 sep}}\;\Varid{y})\end{lcbr}}
+%
+\just\equiv{ Def-id, lei(73) ; Def-split, lei(76) ; cons (x,y) = (x:y)}
+          \ensuremath{\begin{lcbr}\Conid{True}\mathrel{=}k_1 \;\Varid{x}\\\Varid{lookahead\char95 sep}\;(\Varid{x}\mathbin{:}\Varid{y})\mathrel{=}k_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\end{lcbr}}
+%
+\just\equiv{\ensuremath{\Varid{lookahead\char95 sep}\;(\Varid{x}\mathbin{:}\Varid{y})\mathrel{=}\Varid{sp}\;\Varid{x}}}
+          \ensuremath{\begin{lcbr}\Conid{True}\mathrel{=}k_1 \;\Varid{x}\\\Varid{sp}\;\Varid{x}\mathrel{=}k_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\end{lcbr}}
+%
+\just\equiv{Propriedade simétrica da igualdade}
+        \ensuremath{\begin{lcbr}k_1 \;\Varid{x}\mathrel{=}\Conid{True}\\k_2 \;(\Varid{x},(\Varid{wc\char95 w}\;\Varid{y},\Varid{lookahead\char95 sep}\;\Varid{y}))\mathrel{=}\Varid{sp}\;\Varid{x}\end{lcbr}}
+\qed
+\end{eqnarray}
+
+A partir do cálculo efetuado em cima concluímos que $\ensuremath{k_1 }$ é a função constante $\ensuremath{\underline{\Conid{True}}}$ e $\ensuremath{k_2 }$ tem que ser
+a função $\ensuremath{\Varid{sp}\comp \p1}$.
+\begin{hscode}\SaveRestoreHook
+\column{B}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}k_1 \mathrel{=}\underline{\Conid{True}}{}\<[E]%
 \\
 \>[B]{}k_2 \mathrel{=}\Varid{sp}\comp \p1{}\<[E]%
@@ -1942,13 +2114,30 @@ Inserir a partir daqui o resto da resolução deste problema:
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
+\column{6}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{E}{@{}>{\hspre}l<{\hspost}@{}}%
 \>[B]{}\Varid{markMap}\mathbin{::}[\mskip1.5mu \Conid{Pos}\mskip1.5mu]\to \Conid{Map}\to \Conid{Map}{}\<[E]%
 \\
 \>[B]{}\Varid{markMap}\;\Varid{l}\mathrel{=}\cataList{\alt{\underline{\Varid{id}}}{f_2 }}\;(\Varid{pairL}\;\Varid{l})\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{3}{}\<[3]%
-\>[3]{}f_2 \mathrel{=}\bot {}\<[E]%
+\>[3]{}f_2 \mathrel{=}\Varid{compX}\comp (\Varid{auxMarkMap}\comp \conj{\Varid{auxToCell}}{\p1}\times\Varid{id}){}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{compX}\;(\Varid{f},\Varid{g})\mathrel{=}\Varid{f}\comp \Varid{g}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{auxMarkMap}\mathrel{=}\uncurry{\uncurry{\Varid{substMatrix}}}\comp \Varid{assocl}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{auxToCell}\mathrel{=}\uncurry{\Varid{toCell}}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{substMatrix}\mathbin{::}\Varid{a}\to \Conid{Int}\to \Conid{Int}\to [\mskip1.5mu [\mskip1.5mu \Varid{a}\mskip1.5mu]\mskip1.5mu]\to [\mskip1.5mu [\mskip1.5mu \Varid{a}\mskip1.5mu]\mskip1.5mu]{}\<[E]%
+\\
+\>[B]{}\Varid{substMatrix}\;\Varid{x}\;\Varid{linha}\mathrel{=}\cataNat{\alt{f_1 }{f_2 }}\;\mathbf{where}{}\<[E]%
+\\
+\>[B]{}\hsindent{6}{}\<[6]%
+\>[6]{}f_1 \mathrel{=}\underline{\lambda (\Varid{h}\mathbin{:}\Varid{t})\to \Varid{subst}\;\Varid{x}\;\Varid{linha}\;\Varid{h}\mathbin{:}\Varid{t}}{}\<[E]%
+\\
+\>[B]{}\hsindent{6}{}\<[6]%
+\>[6]{}f_2 \;\Varid{f}\;(\Varid{h}\mathbin{:}\Varid{t})\mathrel{=}\Varid{h}\mathbin{:}\Varid{f}\;\Varid{t}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
