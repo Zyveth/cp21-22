@@ -1327,22 +1327,22 @@ gerando a função $|(firsts . outFTree) >< (firsts . outFTree)|$ com o comporta
 \begin{eqnarray*}
 \xymatrix@@C=2cm{
      |Z|
-          \ar[r]^-{|p1|}
 &
      |Z >< Z|
+          \ar[l]_-{|p1|}
+          \ar[r]^-{|p2|}
 &
      |Z|
-          \ar[l]_-{|p2|}
 \\
      |FTree Z (Z >< A)|
-          \ar[r]_-{|p1|}
           \ar[u]^-{|firsts . outFTree|}
 &
      |(FTree Z (Z >< A))|^2
+          \ar[l]^-{|p1|}
           \ar[u]_-{|(firsts . outFTree) >< (firsts . outFTree)|}
+          \ar[r]_-{|p2|}
 &
      |FTree Z (Z >< A)|
-          \ar[l]^-{|p2|}
           \ar[u]_-{|firsts . outFTree|}
 }
 \end{eqnarray*}
