@@ -149,7 +149,7 @@
 \\\hline
 a89584 & Miguel Ângelo Sousa Martins
 \\
-a22222 & Nome2 (preencher)
+a93197 & Miguel Oliveira Dias
 \\
 a33333 & Nome3 (preencher)
 \\
