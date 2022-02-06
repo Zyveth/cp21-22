@@ -145,9 +145,9 @@
 
 \begin{center}\large
 \begin{tabular}{ll}
-\textbf{Grupo} nr. & 99 (preencher)
+\textbf{Grupo} nr. & 17
 \\\hline
-a11111 & Nome1 (preencher)
+a89584 & Miguel Ângelo Sousa Martins
 \\
 a22222 & Nome2 (preencher)
 \\
@@ -1288,7 +1288,7 @@ auxHalf :: ([a],[a]) -> ([a],[a])
 auxHalf (l1,l2) | length l1 < length l2 = (l1 ++ [last l1],l2)
                 | length l2 < length l1 = (l1,l2 ++ [last l2])
                 | otherwise = (l1,l2)
-                
+
 \end{code}
 Gene do catamorfismo:
 
