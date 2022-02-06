@@ -1245,7 +1245,35 @@ $|cons . (id >< (p1 . half))|$.
 A função $g$ age de forma muito semelhante à função $f$ mas aquando da escolha da lista que deve retornar este deve
 escolher a segunda metade da lista. Assim acabamos com $|p2 . half . p2|$.
 
-Desta forma, determinamos que o gene do anamorfismo de $|list2LTree|$ deve ser:
+A primeira aproximação ao exercício foi a descrita acima. Mas uma dúvida surgiu entretanto. As folhas duma $MerkleTree$ 
+devem estar todas ao mesmo nível? Depois de uma breve pesquisa concluímos que sim e portanto a $|LTree|$ gerada aqui
+deveria ter as suas folhas todas ao mesmo nível. Acreditamos que este problema é mais facilmente resolvido aqui do que
+na geração da $MerkleTree$ mais tarde.
+
+Este "novo" problema apesar de não ser muito diferente do anterior implica uma abordagem um pouco diferente. Primeiro
+como determinar as restantes folhas. Segundo o algoritmo de geração de $MerkleTree$'s apresentado no enunciado esta deve
+ser feita replicando o último elemento da lista a transformar quando necessário. E quando é que é necessário? Aqui o
+ideal é que a cada iteração, desde que a lista contenha mais do que um elemento que no final da divisão da lista que
+elas tenham o mesmo número de elementos e que esse número seja par. Porquê? Bem porque depois de alguns testes concluimos
+que a divisão em $Haskell$ é imprivisível e que a maneira mais segura de garantir um resultado satisfatório seria com estes
+passos.
+
+Primeiro através de um $split$ à entrada reconstruir a lista gerando um $tuple$ de listas. De seguida dividir cada uma
+dessas listas a meio através da função auxliar $|half|$. A este ponto temos um $tuple$ com dois $tuples$ de listas
+como elementos em que a primeira lista é a primeira metade da lista total e a segunda bem, a segunda. Algo do género
+$|((A|^*| >< A|^*|) >< (A|^*| >< A|^*|))|$. A função $|auxHalf|$ iguala o número de elementos das duas listas duplicando
+o último elemento da lista mais pequena se necessário. As projeções $|p1|$ e $|p2|$ vão encontrar a primeira e segunda
+metade respetivamente. No final deste processo temos que verificar se a lista gerada contém mais do que um elemento.
+Aqui entre a condição $|cond auxCond getEvenBlock id|$ que basicamente verifica essa condição através função $auxCond$
+e na eventualidade de se verificar (i.e. A lista contém mais do que um elemento.) aplica a função $|getEvenBlock|$
+que coloca o número de elementos de uma lista a par. Se a cada iteração garantirmos este seguimento funcional, é
+garantida a contrução de uma $|LTree|$ cujas folhas se encontram todas ao mesmo nível no final e que esse nível está
+completo.
+
+Desta forma, nasce o novo gene do anamorfismo de $|list2LTree|$:
+
+$|id + split (cond auxCond getEvenBlock id . p1 . auxHalf . half . cons) (cond auxCond getEvenBlock id . p2 . auxHalf . half . cons)|$
+
 \begin{code}
 
 g_list2LTree = (id -|- split (cond auxCond getEvenBlock id . p1 . auxHalf . half . cons) (cond auxCond getEvenBlock id . p2 . auxHalf . half . cons)) . outNEList
@@ -1260,9 +1288,7 @@ auxHalf :: ([a],[a]) -> ([a],[a])
 auxHalf (l1,l2) | length l1 < length l2 = (l1 ++ [last l1],l2)
                 | length l2 < length l1 = (l1,l2 ++ [last l2])
                 | otherwise = (l1,l2)
-
--- (cond auxCond evenBlock id) . p1 . half . cons
-
+                
 \end{code}
 Gene do catamorfismo:
 
@@ -1375,7 +1401,7 @@ auxPairList (a,[]) = (a,a)
 auxPairList (a,h:t) = (a,h)
 
 classicMerkleTree :: Hashable a => [a] -> FTree Integer Integer
-classicMerkleTree = undefined --(hyloNEList conquer divide) . (map Main.hash)
+classicMerkleTree = (hyloNEList conquer divide) . (map Main.hash)
 
 divide = undefined
 
@@ -1587,9 +1613,12 @@ outX (Node i l r) = i2 (i,(l,r))
 
 baseX f h g = f -|- (h >< (g >< g))
 
-recX f = baseX id id f
+recX f = id -|- (id >< (f >< f))
 
-cataX g = g . (recX (cataX g)) . outX
+cataX g = g . recX (cataX g) . outX
+
+outUnit (Image a) = i1 a
+outUnit (Text b) = i2 b
 \end{code}
 
 Inserir a partir daqui o resto da resolução deste problema:
@@ -1599,6 +1628,40 @@ Inserir a partir daqui o resto da resolução deste problema:
 \end{code}
 
 \subsection*{Problema 4}
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |(A >< A)|^*
+&
+&
+    |1 + (A >< A) >< (A >< A)|^*
+          \ar[ll]_-{|inList = either Nil Cons|}
+\\
+     A^*
+          \ar[u]^-{pairL}
+          \ar[r]_-{|outList|}
+&
+     |1 + A >< A|^*
+          \ar[r]_-{|g|}
+&
+     |1 + (A >< A) >< A|^*
+          \ar[u]_{|id + id >< pairL|}
+}
+\end{eqnarray*}
+
+Nós sabemos que $g = id + |split f g|$. Então sobra determinar $f$ e $g$. Para tal vamos analisar
+cada função individualmente.
+
+A função $|f|$ vai processar o $tuple$ derivado do $|outList|$ de maneira a que este produza o $tuple$ desejado. Este
+efeito é obtido através da função auxiliar $|auxPairL|$ que como podemos ver toma como tipo de entrada um $tuple$
+igual ao originado por $|outList|$ e gera um novo $tuple$ como o desejado.
+
+A função $|g|$ quer apenas preservar o resto da lista portanto trata-se apenas da projeção $|p2|$.
+
+No final do anamorfismo temos uma estrutura quase semelhante à desejada com a única exceção de que se se tratar
+do caso em que a lista gerada tem mais de um elemento a lista teria um elemento a mais no final. Assim para resolver esse
+problema basta compor outra função auxiliar, $|pairLAux|$ que remove o último elemento de uma lista se esta tiver mais
+do que um elemento, com o resultado do anamorfismo originando o efeito pretendido.
 
 \begin{code}
 pairL :: [a] -> [(a,a)]
@@ -1615,6 +1678,82 @@ auxPairL (a,h:t) = (a,h)
 
 \end{code}
 
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |(Pos >< Pos)|^*
+           \ar[d]_-{|cataList g|}
+&
+    |1 + (Pos >< Pos) >< (Pos >< Pos)|^*
+           \ar[d]^{|id + id >< cataList g|}
+           \ar[l]_-{|inList = either nil cons|}
+\\
+     |Map|^{Map}
+&
+     |1 + (Pos >< Pos) >< Map|^{Map}
+           \ar[l]^-{|g = either (const id) f2|}
+}
+\end{eqnarray*}
+
+Para determinar $|f2|$ temos primeiro que entender o que é que esta recebe à entrada. Como podemos ver no diagrama
+acima $|f2|$ recebe à entrada um $tuple$ cujo primeiro elemento trata-se de um $tuple$ de posições e o segundo de uma
+função que gera um mapa quando receber um mapa. Depois, temos que entender o que é que $|f2|$ tem que gerar. Mais uma
+vez pelo diagrama facilmente concluimos que $|f2|$ tem que gerar também uma função que gera um mapa quando receber um
+mapa. Com isto podemos deduzir que o comportamento funcional de $|f2|$ será o seguinte:
+\begin{enumerate}
+     \item Processar o primeiro elemento do tuple e gerar uma função que gera um mapa quando receber um mapa;
+     \item Compor essa nova função com o segundo elemento do tuple e gerar uma nova função capaz de gerar um mapa quando
+     receber um mapa. 
+\end{enumerate}
+
+À primeira vista bastante simples portanto comecemos pelo ponto número 1. Para este a estratégia adotada foi primeiro
+determinar a célula que iria substituir a já presente. Felizmente já havia disponível a função $|toCell|$ que trata
+desse processamento. No entanto esta toma como entrada duas posições e não um $tuple$ de posições mas nada que um 
+$uncurry$ não consiga resolver. Assim a função responsável por gerar a nova célula é a função $|auxToCell|$ que se
+trata basicamente de $|uncurry toCell|$.
+
+Depois temos que também saber onde é que precisaremos de substituir essa célula. Naturalmente essa substituição é feita
+na posição correspondete ao primeiro elemento do $tuple$ de posições. Precisamos então também de guardar essa informção
+através da projeção $|p1|$.
+
+Com isto o próximo passo será efetivamente gerar a função que é capaz de gerar um mapa quando receber um mapa. A função
+$|substMatrix|$ serve para esse mesmo propósito. Esta é semelhante à função $|subst|$ já disponibilizada e faz mesmo uso
+dela. $|substMatrix|$ recebe à entrada um elemento a substituir, a coluna e alinha onde substituílo. A função é nada
+menos que um catamorfismo dos naturais que percorre a linha como argumento até este ser $0$ e aí efetua o 
+$|subst x coluna|$ que substitui o elemento $|x|$ na coluna $|coluna|$.
+
+\begin{eqnarray*}
+\xymatrix@@C=2cm{
+    |Nat0|
+           \ar[d]_-{|substMatrix x coluna|}
+&
+    |1 + Nat0|
+           \ar[d]^{|id + (substMatrix x coluna)|}
+           \ar[l]_-{|inNat|}
+\\
+     |Map|^{Map}
+&
+     |1 + Map|^{Map}
+           \ar[l]^-{|g = either f1 f2|}
+}
+\end{eqnarray*}
+
+
+$|f1|$, o caso quando a linha é $|0|$ é a função constante que executa $|subst x coluna|$ à cabeça da lista que é 
+passada como argumento e $|f2|$ é o caso resursivo.
+
+Assim, através da função $|substMatrix|$ somos capazes de gerar uma função que gera mapas a partir de mapas com 
+recurso ao elemeto a substitui e à posição onde substitui-lo. Falta pensar em como lhe passar essa informação. Como foi
+dito em cima já é possível preservá-la através das funções $|auxToCell|$ e $|p1|$. Estes se forem colocados num $split$
+temos $|split auxToCell p1|$ que devolve um $tuple$ com o elemento a substituir no primeiro elemento e a posição onde
+substituilo no segundo. Assim a função $|substMatrix|$ tem que poder aceitar esse tipo à entrada. Mais uma vez nada que
+alguns $uncurry$ e um $|assocl|$ não consiga resolver. Assim obtemos a função $|auxMarkMap|$ que se trata de 
+$|uncurry (uncurry substMatrix) . assocl|$ e gera uma função que gera mapas a partir de mapas recebendo um $tuple$
+como o descrito à entrada.
+
+Agora só falta o ponto número 2. Este é bastante mais simples que o 1 pois a dificuldade está em conseguir compor
+duas funções presentes num $tuple$. A função auxiliar $|compX|$ trata disso e assim obtemos uma função $|f2|$ como
+a seguinte $|compX . (auxMarkMap . split auxToCell p1 >< id)|$.
+
 \begin{code}
 markMap :: [Pos] -> Map -> Map
 markMap l = cataList (either (const id) f2) (pairL l) where
@@ -1627,8 +1766,8 @@ auxMarkMap = uncurry (uncurry substMatrix) . assocl
 auxToCell = uncurry toCell
 
 substMatrix :: a -> Int -> Int -> [[a]] -> [[a]]
-substMatrix x linha = cataNat (either f1 f2) where
-     f1 = const (\(h:t) -> subst x linha h : t)
+substMatrix x coluna = cataNat (either f1 f2) where
+     f1 = const (\(h:t) -> subst x coluna h : t)
      f2 f (h:t) = h : f t
 
 \end{code}

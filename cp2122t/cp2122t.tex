@@ -1749,7 +1749,35 @@ $\ensuremath{\Varid{cons}\comp (\Varid{id}\times(\p1\comp \Varid{half}))}$.
 A função $g$ age de forma muito semelhante à função $f$ mas aquando da escolha da lista que deve retornar este deve
 escolher a segunda metade da lista. Assim acabamos com $\ensuremath{\p2\comp \Varid{half}\comp \p2}$.
 
-Desta forma, determinamos que o gene do anamorfismo de $\ensuremath{\Varid{list2LTree}}$ deve ser:
+A primeira aproximação ao exercício foi a descrita acima. Mas uma dúvida surgiu entretanto. As folhas duma $MerkleTree$ 
+devem estar todas ao mesmo nível? Depois de uma breve pesquisa concluímos que sim e portanto a $\ensuremath{{\LTree}}$ gerada aqui
+deveria ter as suas folhas todas ao mesmo nível. Acreditamos que este problema é mais facilmente resolvido aqui do que
+na geração da $MerkleTree$ mais tarde.
+
+Este "novo" problema apesar de não ser muito diferente do anterior implica uma abordagem um pouco diferente. Primeiro
+como determinar as restantes folhas. Segundo o algoritmo de geração de $MerkleTree$'s apresentado no enunciado esta deve
+ser feita replicando o último elemento da lista a transformar quando necessário. E quando é que é necessário? Aqui o
+ideal é que a cada iteração, desde que a lista contenha mais do que um elemento que no final da divisão da lista que
+elas tenham o mesmo número de elementos e que esse número seja par. Porquê? Bem porque depois de alguns testes concluimos
+que a divisão em $Haskell$ é imprivisível e que a maneira mais segura de garantir um resultado satisfatório seria com estes
+passos.
+
+Primeiro através de um $split$ à entrada reconstruir a lista gerando um $tuple$ de listas. De seguida dividir cada uma
+dessas listas a meio através da função auxliar $\ensuremath{\Varid{half}}$. A este ponto temos um $tuple$ com dois $tuples$ de listas
+como elementos em que a primeira lista é a primeira metade da lista total e a segunda bem, a segunda. Algo do género
+$\ensuremath{((\Conid{A}}^*\ensuremath{\times\Conid{A}}^*\ensuremath{)\times(\Conid{A}}^*\ensuremath{\times\Conid{A}}^*\ensuremath{))}$. A função $\ensuremath{\Varid{auxHalf}}$ iguala o número de elementos das duas listas duplicando
+o último elemento da lista mais pequena se necessário. As projeções $\ensuremath{\p1}$ e $\ensuremath{\p2}$ vão encontrar a primeira e segunda
+metade respetivamente. No final deste processo temos que verificar se a lista gerada contém mais do que um elemento.
+Aqui entre a condição $\ensuremath{\Varid{cond}\;\Varid{auxCond}\;\Varid{getEvenBlock}\;\Varid{id}}$ que basicamente verifica essa condição através função $auxCond$
+e na eventualidade de se verificar (i.e. A lista contém mais do que um elemento.) aplica a função $\ensuremath{\Varid{getEvenBlock}}$
+que coloca o número de elementos de uma lista a par. Se a cada iteração garantirmos este seguimento funcional, é
+garantida a contrução de uma $\ensuremath{{\LTree}}$ cujas folhas se encontram todas ao mesmo nível no final e que esse nível está
+completo.
+
+Desta forma, nasce o novo gene do anamorfismo de $\ensuremath{\Varid{list2LTree}}$:
+
+$\ensuremath{\Varid{id}\mathbin{+}\conj{\Varid{cond}\;\Varid{auxCond}\;\Varid{getEvenBlock}\;\Varid{id}\comp \p1\comp \Varid{auxHalf}\comp \Varid{half}\comp \Varid{cons}}{\Varid{cond}\;\Varid{auxCond}\;\Varid{getEvenBlock}\;\Varid{id}\comp \p2\comp \Varid{auxHalf}\comp \Varid{half}\comp \Varid{cons}}}$
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{17}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -1773,8 +1801,6 @@ Desta forma, determinamos que o gene do anamorfismo de $\ensuremath{\Varid{list2
 \\
 \>[B]{}\hsindent{17}{}\<[17]%
 \>[17]{}\mid \Varid{otherwise}\mathrel{=}(l_1 ,l_2 ){}\<[E]%
-\\[\blanklineskip]%
-\>[B]{}\mbox{\onelinecomment  (cond auxCond evenBlock id) . p1 . half . cons}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 Gene do catamorfismo:
@@ -1901,7 +1927,7 @@ Valorização:
 \\[\blanklineskip]%
 \>[B]{}\Varid{classicMerkleTree}\mathbin{::}\Conid{Hashable}\;\Varid{a}\Rightarrow [\mskip1.5mu \Varid{a}\mskip1.5mu]\to {\FTree}\;\mathbb{Z}\;\mathbb{Z}{}\<[E]%
 \\
-\>[B]{}\Varid{classicMerkleTree}\mathrel{=}\bot \mbox{\onelinecomment (hyloNEList conquer divide) . (map Main.hash)}{}\<[E]%
+\>[B]{}\Varid{classicMerkleTree}\mathrel{=}(\Varid{hyloNEList}\;\Varid{conquer}\;\Varid{divide})\comp (\map \;\Varid{\Conid{Main}.hash}){}\<[E]%
 \\[\blanklineskip]%
 \>[B]{}\Varid{divide}\mathrel{=}\bot {}\<[E]%
 \\[\blanklineskip]%
@@ -2071,9 +2097,13 @@ a função $\ensuremath{\Varid{sp}\comp \p1}$.
 \\[\blanklineskip]%
 \>[B]{}\Varid{baseX}\;\Varid{f}\;\Varid{h}\;\Varid{g}\mathrel{=}\Varid{f}+(\Varid{h}\times(\Varid{g}\times\Varid{g})){}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Varid{recX}\;\Varid{f}\mathrel{=}\Varid{baseX}\;\Varid{id}\;\Varid{id}\;\Varid{f}{}\<[E]%
+\>[B]{}\Varid{recX}\;\Varid{f}\mathrel{=}\Varid{id}+(\Varid{id}\times(\Varid{f}\times\Varid{f})){}\<[E]%
 \\[\blanklineskip]%
-\>[B]{}\Varid{cataX}\;\Varid{g}\mathrel{=}\Varid{g}\comp (\Varid{recX}\;(\Varid{cataX}\;\Varid{g}))\comp \Varid{outX}{}\<[E]%
+\>[B]{}\Varid{cataX}\;\Varid{g}\mathrel{=}\Varid{g}\comp \Varid{recX}\;(\Varid{cataX}\;\Varid{g})\comp \Varid{outX}{}\<[E]%
+\\[\blanklineskip]%
+\>[B]{}\Varid{outUnit}\;(\Conid{Image}\;\Varid{a})\mathrel{=}i_1\;\Varid{a}{}\<[E]%
+\\
+\>[B]{}\Varid{outUnit}\;(\Conid{Text}\;\Varid{b})\mathrel{=}i_2\;\Varid{b}{}\<[E]%
 \ColumnHook
 \end{hscode}\resethooks
 
@@ -2085,6 +2115,40 @@ Inserir a partir daqui o resto da resolução deste problema:
 \end{hscode}\resethooks
 
 \subsection*{Problema 4}
+
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+    \ensuremath{(\Conid{A}\times\Conid{A})}^*
+&
+&
+    \ensuremath{\mathrm{1}\mathbin{+}(\Conid{A}\times\Conid{A})\times(\Conid{A}\times\Conid{A})}^*
+          \ar[ll]_-{\ensuremath{\Varid{inList}\mathrel{=}\alt{\Conid{Nil}}{\Conid{Cons}}}}
+\\
+     A^*
+          \ar[u]^-{pairL}
+          \ar[r]_-{\ensuremath{\Varid{outList}}}
+&
+     \ensuremath{\mathrm{1}\mathbin{+}\Conid{A}\times\Conid{A}}^*
+          \ar[r]_-{\ensuremath{\Varid{g}}}
+&
+     \ensuremath{\mathrm{1}\mathbin{+}(\Conid{A}\times\Conid{A})\times\Conid{A}}^*
+          \ar[u]_{\ensuremath{\Varid{id}\mathbin{+}\Varid{id}\times\Varid{pairL}}}
+}
+\end{eqnarray*}
+
+Nós sabemos que $g = id + \ensuremath{\conj{\Varid{f}}{\Varid{g}}}$. Então sobra determinar $f$ e $g$. Para tal vamos analisar
+cada função individualmente.
+
+A função $\ensuremath{\Varid{f}}$ vai processar o $tuple$ derivado do $\ensuremath{\Varid{outList}}$ de maneira a que este produza o $tuple$ desejado. Este
+efeito é obtido através da função auxiliar $\ensuremath{\Varid{auxPairL}}$ que como podemos ver toma como tipo de entrada um $tuple$
+igual ao originado por $\ensuremath{\Varid{outList}}$ e gera um novo $tuple$ como o desejado.
+
+A função $\ensuremath{\Varid{g}}$ quer apenas preservar o resto da lista portanto trata-se apenas da projeção $\ensuremath{\p2}$.
+
+No final do anamorfismo temos uma estrutura quase semelhante à desejada com a única exceção de que se se tratar
+do caso em que a lista gerada tem mais de um elemento a lista teria um elemento a mais no final. Assim para resolver esse
+problema basta compor outra função auxiliar, $\ensuremath{\Varid{pairLAux}}$ que remove o último elemento de uma lista se esta tiver mais
+do que um elemento, com o resultado do anamorfismo originando o efeito pretendido.
 
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -2111,6 +2175,82 @@ Inserir a partir daqui o resto da resolução deste problema:
 \ColumnHook
 \end{hscode}\resethooks
 
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+    \ensuremath{(\Conid{Pos}\times\Conid{Pos})}^*
+           \ar[d]_-{\ensuremath{\cataList{\Varid{g}}}}
+&
+    \ensuremath{\mathrm{1}\mathbin{+}(\Conid{Pos}\times\Conid{Pos})\times(\Conid{Pos}\times\Conid{Pos})}^*
+           \ar[d]^{\ensuremath{\Varid{id}\mathbin{+}\Varid{id}\times\cataList{\Varid{g}}}}
+           \ar[l]_-{\ensuremath{\Varid{inList}\mathrel{=}\alt{\Varid{nil}}{\Varid{cons}}}}
+\\
+     \ensuremath{\Conid{Map}}^{Map}
+&
+     \ensuremath{\mathrm{1}\mathbin{+}(\Conid{Pos}\times\Conid{Pos})\times\Conid{Map}}^{Map}
+           \ar[l]^-{\ensuremath{\Varid{g}\mathrel{=}\alt{\underline{\Varid{id}}}{f_2 }}}
+}
+\end{eqnarray*}
+
+Para determinar $\ensuremath{f_2 }$ temos primeiro que entender o que é que esta recebe à entrada. Como podemos ver no diagrama
+acima $\ensuremath{f_2 }$ recebe à entrada um $tuple$ cujo primeiro elemento trata-se de um $tuple$ de posições e o segundo de uma
+função que gera um mapa quando receber um mapa. Depois, temos que entender o que é que $\ensuremath{f_2 }$ tem que gerar. Mais uma
+vez pelo diagrama facilmente concluimos que $\ensuremath{f_2 }$ tem que gerar também uma função que gera um mapa quando receber um
+mapa. Com isto podemos deduzir que o comportamento funcional de $\ensuremath{f_2 }$ será o seguinte:
+\begin{enumerate}
+     \item Processar o primeiro elemento do tuple e gerar uma função que gera um mapa quando receber um mapa;
+     \item Compor essa nova função com o segundo elemento do tuple e gerar uma nova função capaz de gerar um mapa quando
+     receber um mapa. 
+\end{enumerate}
+
+À primeira vista bastante simples portanto comecemos pelo ponto número 1. Para este a estratégia adotada foi primeiro
+determinar a célula que iria substituir a já presente. Felizmente já havia disponível a função $\ensuremath{\Varid{toCell}}$ que trata
+desse processamento. No entanto esta toma como entrada duas posições e não um $tuple$ de posições mas nada que um 
+$uncurry$ não consiga resolver. Assim a função responsável por gerar a nova célula é a função $\ensuremath{\Varid{auxToCell}}$ que se
+trata basicamente de $\ensuremath{\uncurry{\Varid{toCell}}}$.
+
+Depois temos que também saber onde é que precisaremos de substituir essa célula. Naturalmente essa substituição é feita
+na posição correspondete ao primeiro elemento do $tuple$ de posições. Precisamos então também de guardar essa informção
+através da projeção $\ensuremath{\p1}$.
+
+Com isto o próximo passo será efetivamente gerar a função que é capaz de gerar um mapa quando receber um mapa. A função
+$\ensuremath{\Varid{substMatrix}}$ serve para esse mesmo propósito. Esta é semelhante à função $\ensuremath{\Varid{subst}}$ já disponibilizada e faz mesmo uso
+dela. $\ensuremath{\Varid{substMatrix}}$ recebe à entrada um elemento a substituir, a coluna e alinha onde substituílo. A função é nada
+menos que um catamorfismo dos naturais que percorre a linha como argumento até este ser $0$ e aí efetua o 
+$\ensuremath{\Varid{subst}\;\Varid{x}\;\Varid{coluna}}$ que substitui o elemento $\ensuremath{\Varid{x}}$ na coluna $\ensuremath{\Varid{coluna}}$.
+
+\begin{eqnarray*}
+\xymatrix@C=2cm{
+    \ensuremath{\N_0}
+           \ar[d]_-{\ensuremath{\Varid{substMatrix}\;\Varid{x}\;\Varid{coluna}}}
+&
+    \ensuremath{\mathrm{1}\mathbin{+}\N_0}
+           \ar[d]^{\ensuremath{\Varid{id}\mathbin{+}(\Varid{substMatrix}\;\Varid{x}\;\Varid{coluna})}}
+           \ar[l]_-{\ensuremath{\mathsf{in}}}
+\\
+     \ensuremath{\Conid{Map}}^{Map}
+&
+     \ensuremath{\mathrm{1}\mathbin{+}\Conid{Map}}^{Map}
+           \ar[l]^-{\ensuremath{\Varid{g}\mathrel{=}\alt{f_1 }{f_2 }}}
+}
+\end{eqnarray*}
+
+
+$\ensuremath{f_1 }$, o caso quando a linha é $\ensuremath{\mathrm{0}}$ é a função constante que executa $\ensuremath{\Varid{subst}\;\Varid{x}\;\Varid{coluna}}$ à cabeça da lista que é 
+passada como argumento e $\ensuremath{f_2 }$ é o caso resursivo.
+
+Assim, através da função $\ensuremath{\Varid{substMatrix}}$ somos capazes de gerar uma função que gera mapas a partir de mapas com 
+recurso ao elemeto a substitui e à posição onde substitui-lo. Falta pensar em como lhe passar essa informação. Como foi
+dito em cima já é possível preservá-la através das funções $\ensuremath{\Varid{auxToCell}}$ e $\ensuremath{\p1}$. Estes se forem colocados num $split$
+temos $\ensuremath{\conj{\Varid{auxToCell}}{\p1}}$ que devolve um $tuple$ com o elemento a substituir no primeiro elemento e a posição onde
+substituilo no segundo. Assim a função $\ensuremath{\Varid{substMatrix}}$ tem que poder aceitar esse tipo à entrada. Mais uma vez nada que
+alguns $uncurry$ e um $\ensuremath{\Varid{assocl}}$ não consiga resolver. Assim obtemos a função $\ensuremath{\Varid{auxMarkMap}}$ que se trata de 
+$\ensuremath{\uncurry{\uncurry{\Varid{substMatrix}}}\comp \Varid{assocl}}$ e gera uma função que gera mapas a partir de mapas recebendo um $tuple$
+como o descrito à entrada.
+
+Agora só falta o ponto número 2. Este é bastante mais simples que o 1 pois a dificuldade está em conseguir compor
+duas funções presentes num $tuple$. A função auxiliar $\ensuremath{\Varid{compX}}$ trata disso e assim obtemos uma função $\ensuremath{f_2 }$ como
+a seguinte $\ensuremath{\Varid{compX}\comp (\Varid{auxMarkMap}\comp \conj{\Varid{auxToCell}}{\p1}\times\Varid{id})}$.
+
 \begin{hscode}\SaveRestoreHook
 \column{B}{@{}>{\hspre}l<{\hspost}@{}}%
 \column{3}{@{}>{\hspre}l<{\hspost}@{}}%
@@ -2131,10 +2271,10 @@ Inserir a partir daqui o resto da resolução deste problema:
 \\[\blanklineskip]%
 \>[B]{}\Varid{substMatrix}\mathbin{::}\Varid{a}\to \Conid{Int}\to \Conid{Int}\to [\mskip1.5mu [\mskip1.5mu \Varid{a}\mskip1.5mu]\mskip1.5mu]\to [\mskip1.5mu [\mskip1.5mu \Varid{a}\mskip1.5mu]\mskip1.5mu]{}\<[E]%
 \\
-\>[B]{}\Varid{substMatrix}\;\Varid{x}\;\Varid{linha}\mathrel{=}\cataNat{\alt{f_1 }{f_2 }}\;\mathbf{where}{}\<[E]%
+\>[B]{}\Varid{substMatrix}\;\Varid{x}\;\Varid{coluna}\mathrel{=}\cataNat{\alt{f_1 }{f_2 }}\;\mathbf{where}{}\<[E]%
 \\
 \>[B]{}\hsindent{6}{}\<[6]%
-\>[6]{}f_1 \mathrel{=}\underline{\lambda (\Varid{h}\mathbin{:}\Varid{t})\to \Varid{subst}\;\Varid{x}\;\Varid{linha}\;\Varid{h}\mathbin{:}\Varid{t}}{}\<[E]%
+\>[6]{}f_1 \mathrel{=}\underline{\lambda (\Varid{h}\mathbin{:}\Varid{t})\to \Varid{subst}\;\Varid{x}\;\Varid{coluna}\;\Varid{h}\mathbin{:}\Varid{t}}{}\<[E]%
 \\
 \>[B]{}\hsindent{6}{}\<[6]%
 \>[6]{}f_2 \;\Varid{f}\;(\Varid{h}\mathbin{:}\Varid{t})\mathrel{=}\Varid{h}\mathbin{:}\Varid{f}\;\Varid{t}{}\<[E]%

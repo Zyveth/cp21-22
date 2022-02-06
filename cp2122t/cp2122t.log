@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.17)  28 JAN 2022 17:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.17)  6 FEB 2022 19:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1078,60 +1078,51 @@ Overfull \hbox (12.57095pt too wide) in paragraph at lines 1424--1519
 \openout5 = `cp2122t.ptb'.
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][] 
  []
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][] 
  []
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][] 
  []
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][] 
  []
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][] 
  []
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][] 
  []
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][] 
  []
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][][][] 
  []
 
 
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
+Overfull \hbox (226.59213pt too wide) in paragraph at lines 1781--1805
  [][][][] 
  []
 
-
-Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
- [][] 
- []
-
-<xymatrix 2x2 191> [15] <xymatrix 3x1 102> <xymatrix 3x2 334>
-\openout5 = `cp2122t.ptb'.
-
-\openout5 = `cp2122t.ptb'.
-
+[15] <xymatrix 2x2 191> <xymatrix 3x1 102> <xymatrix 3x2 334>
 \openout5 = `cp2122t.ptb'.
 
 \openout5 = `cp2122t.ptb'.
@@ -1139,8 +1130,12 @@ Overfull \hbox (226.59213pt too wide) in paragraph at lines 1753--1779
  [16]
 \openout5 = `cp2122t.ptb'.
 
+\openout5 = `cp2122t.ptb'.
 
-Overfull \hbox (437.69019pt too wide) in alignment at lines 1955--2001
+\openout5 = `cp2122t.ptb'.
+
+
+Overfull \hbox (437.69019pt too wide) in alignment at lines 1981--2027
  [][][] []
  []
 
@@ -1154,15 +1149,11 @@ Overfull \hbox (437.69019pt too wide) in alignment at lines 1955--2001
 
 \openout5 = `cp2122t.ptb'.
 
+ <xymatrix 3x2 243> [19]
 \openout5 = `cp2122t.ptb'.
 
-\openout5 = `cp2122t.ptb'.
-
-\openout5 = `cp2122t.ptb'.
-
-\openout5 = `cp2122t.ptb'.
-
- [19]
+ <xymatrix 2x2 191> <xymatrix 2x2 191>
+[20]
 \openout5 = `cp2122t.ptb'.
 
 \openout5 = `cp2122t.ptb'.
@@ -1173,7 +1164,14 @@ Overfull \hbox (437.69019pt too wide) in alignment at lines 1955--2001
 
 \openout5 = `cp2122t.ptb'.
 
- (./cp2122t.ind [20] [21
+ [21]
+\openout5 = `cp2122t.ptb'.
+
+\openout5 = `cp2122t.ptb'.
+
+\openout5 = `cp2122t.ptb'.
+
+ (./cp2122t.ind [22] [23
 
 
 ]) (./cp2122t.bbl
@@ -1183,17 +1181,17 @@ Overfull \hbox (91.4158pt too wide) in paragraph at lines 22--28
  .
  []
 
-) [22
+) [24
 
 ] (./cp2122t.aux)
 Package rerunfilecheck Info: File `cp2122t.out' has not changed.
 (rerunfilecheck)             Checksum: 5BE6D09900E9771E8C324901A967EEEB;1140.
  ) 
 Here is how much of TeX's memory you used:
- 16400 strings out of 478994
- 239160 string characters out of 5858183
- 634229 words of memory out of 5000000
- 33444 multiletter control sequences out of 15000+600000
+ 16407 strings out of 478994
+ 239228 string characters out of 5858183
+ 640229 words of memory out of 5000000
+ 33447 multiletter control sequences out of 15000+600000
  443534 words of font info for 144 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  72i,21n,77p,3290b,511s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1230,10 +1228,10 @@ courier/ucrr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino
 usr/local/texlive/2021/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb></usr/lo
 cal/texlive/2021/texmf-dist/fonts/type1/public/xypic/xyatip10.pfb></usr/local/t
 exlive/2021/texmf-dist/fonts/type1/public/xypic/xybtip10.pfb>
-Output written on cp2122t.pdf (22 pages, 414022 bytes).
+Output written on cp2122t.pdf (24 pages, 427616 bytes).
 PDF statistics:
- 583 PDF objects out of 1000 (max. 8388607)
- 467 compressed objects within 5 object streams
- 86 named destinations out of 1000 (max. 500000)
+ 595 PDF objects out of 1000 (max. 8388607)
+ 477 compressed objects within 5 object streams
+ 90 named destinations out of 1000 (max. 500000)
  49 words of extra memory for PDF output out of 10000 (max. 10000000)
 
