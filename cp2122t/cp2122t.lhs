@@ -151,7 +151,7 @@ a89584 & Miguel Ângelo Sousa Martins
 \\
 a93197 & Miguel Oliveira Dias
 \\
-a33333 & Nome3 (preencher)
+a73591 & Gonçalo Leal da Mota Meireles Moreira
 \\
 a44444 & Nome4 (preencher, se aplicável, ou apagar)
 \end{tabular}
